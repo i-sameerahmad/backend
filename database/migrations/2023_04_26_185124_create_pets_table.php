@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('gender');
             $table->integer('age');
             $table->decimal('price', 8, 2);
+            $table->boolean('vaccinated')->default(false);
+            $table->string('certificate')->nullable();
             $table->string('status')->default('pending');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');

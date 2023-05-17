@@ -24,6 +24,7 @@ class PetController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request);
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -33,6 +34,8 @@ class PetController extends Controller
             'price' => 'required|numeric',
             'user_id' => 'required|numeric',
             'image' => 'nullable|image|max:2048', // Add validation rules for the image field
+            'certificate' => 'nullable|mimes:pdf|max:2048',
+            'vaccinated' => 'nullable|boolean',
         ]);
         $pet = new Pet();
         $pet->title = $validatedData['title'];
@@ -43,24 +46,20 @@ class PetController extends Controller
         $pet->price = $validatedData['price'];
         $pet->user_id = $validatedData['user_id'];
         $pet->status = 'pending';
-        // $pet->title = $request->input('title');
-        // $pet->description = $request->input('description');
-        // $pet->category = $request->input('category');
-        // $pet->gender = $request->input('gender');
-        // $pet->age = $request->input('age');
-        // $pet->price = $request->input('price');
-        // $pet->breed = $request->input('breed');
-        // $pet->user_id = $request->input('user_id');
-        // $pet->image = $request->input('image');
+        $pet->vaccinated = $validatedData['vaccinated'] ?? false;
 
-        // 'image' => 'nullable|image|max:2048',
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/images', $filename);
             $pet->image = $filename;
         }
-
+        if ($request->hasFile('certificate')) {
+            $certificate = $request->file('certificate');
+            $certificateFilename = time() . '_' . $certificate->getClientOriginalName();
+            $certificate->storeAs('public/certificates', $certificateFilename);
+            $pet->certificate = $certificateFilename;
+        }
         $pet->save();
 
         return response()->json([
@@ -100,7 +99,7 @@ class PetController extends Controller
         $pet->age = $request->input('age');
         $pet->price = $request->input('price');
         $pet->status = $request->input('status');
-
+        $pet->vaccinated = $request->input('vaccinated');
         // Handle image upload
         if ($request->hasFile('image')) {
             $validatedData = $request->validate([
@@ -110,6 +109,12 @@ class PetController extends Controller
             $filename = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/images', $filename);
             $pet->image = $filename;
+        }
+        if ($request->hasFile('certificate')) {
+            $certificate = $request->file('certificate');
+            $certificateFilename = time() . '_' . $certificate->getClientOriginalName();
+            $certificate->storeAs('public/certificates', $certificateFilename);
+            $pet->certificate = $certificateFilename;
         }
 
         $pet->save();

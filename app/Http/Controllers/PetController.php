@@ -48,17 +48,26 @@ class PetController extends Controller
         $pet->status = 'pending';
         $pet->vaccinated = $validatedData['vaccinated'] ?? false;
 
+        // if ($request->hasFile('image')) {
+        //     $image = $request->file('image');
+        //     $filename = time() . '.' . $image->getClientOriginalExtension();
+        //     $image->storeAs('images/', $filename);
+        //     $pet->image = $filename;
+        // }
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $filename = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/images', $filename);
-            $pet->image = $filename;
+            $pet['image'] = $image->getClientOriginalName();
+            $image->move('images/', $image->getClientOriginalName());
         }
         if ($request->hasFile('certificate')) {
             $certificate = $request->file('certificate');
-            $certificateFilename = time() . '_' . $certificate->getClientOriginalName();
-            $certificate->storeAs('public/certificates', $certificateFilename);
-            $pet->certificate = $certificateFilename;
+            $pet['certificate'] = $certificate->getClientOriginalName();
+            $certificate->move('certificates/', $certificate->getClientOriginalName());
+
+            // $certificate = $request->file('certificate');
+            // $certificateFilename = time() . '_' . $certificate->getClientOriginalName();
+            // $certificate->storeAs('public/certificates', $certificateFilename);
+            // $pet->certificate = $certificateFilename;
         }
         $pet->save();
 

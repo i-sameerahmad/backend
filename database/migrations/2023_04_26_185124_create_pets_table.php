@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('certificate')->nullable();
             $table->string('status')->default('pending');
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('mob_users');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

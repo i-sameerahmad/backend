@@ -18,6 +18,8 @@ class AuthController extends Controller
      */
     public function createUser(Request $request)
     {
+// dd($request->all());
+
         try {
             //Validated
             $validateUser = Validator::make($request->all(),
@@ -35,7 +37,6 @@ class AuthController extends Controller
                     'errors' => $validateUser->errors()
                 ], 401);
             }
-
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
